@@ -47,7 +47,7 @@ const removeTag = (tag: string) => {
   </div>
   <n-modal v-model:show="visiable">
     <n-card style="width: 600px" title="Input the name of the tag you want to add" :bordered="false" closable role="dialog" @close="closeModal">
-      <n-input v-model:value="inputValue" type="text" placeholder="Tag" />
+      <n-input v-model:value="inputValue" @keyup.enter="addTag" type="text" placeholder="Tag" />
       <template #action>
         <div class="flex flex-row justify-end">
           <n-button class="mr-2" @click="closeModal">Cancel</n-button>
