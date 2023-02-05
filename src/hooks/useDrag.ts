@@ -12,7 +12,6 @@ export function useDrag(meta: Ref<{ data: { title: string; tags: string[] }[] }>
     if (target.value !== index) {
       const list = meta.value.data;
       const source = list[target.value];
-      console.log("source:", source);
       list.splice(target.value, 1);
       list.splice(index, 0, source);
       target.value = index;
