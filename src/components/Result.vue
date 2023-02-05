@@ -1,9 +1,7 @@
 <script setup lang="ts">
-
 const props = defineProps<{
   results: string[];
 }>();
-
 </script>
 
 <template>
@@ -12,7 +10,7 @@ const props = defineProps<{
       <li class="h-8 hover:bg-gray-400 hover:cursor-pointer" v-for="item in props.results">
         <p>{{ item }}</p>
       </li>
-  </ul>
+    </ul>
   </div>
 </template>
 

@@ -1,15 +1,17 @@
 <script setup lang="ts">
+import { computed, ref } from "vue";
 import metaJSON from "./metaData/data.json";
 import Item from "./components/Item.vue";
-import Result from "./components/Result.vue"
+import Result from "./components/Result.vue";
 import { NButton, NInputGroup, NInput, NIcon } from "naive-ui";
 import { Search } from "@vicons/carbon";
-import { computed, ref } from "vue";
+import { useDrag } from "./hooks/useDrag";
+import { useSearch } from "./hooks/useSearch";
 
-const keyWord = ref("");
-const searchResult = ref<string[]>([]);
 const meta = ref(metaJSON);
 const data = computed(() => meta.value.data);
+const { start, enter, over } = useDrag(meta);
+const { keyWord, searchResult, onSearch } = useSearch(data);
 
 const itemAddTag = (title: string, value: string) => {
   const newData = data.value.map((item) => {
@@ -36,28 +38,33 @@ const itemRemoveTag = (title: string, tag: string) => {
   });
   meta.value.data = newData;
 };
-
-const onSearch = () => {
-  const result = data.value.map((e) => e.title).filter((m) => m.includes(keyWord.value));
-  console.log("searchResult.value:",result);
-  searchResult.value = result;
-};
 </script>
 
 <template>
   <div class="p-8 bg-white">
     <div class="mb-4">
       <n-input-group>
-          <n-input v-model:value="keyWord" placeholder="Search" @keyup.enter="onSearch" />
-          <n-button @click="onSearch">
-            <template #icon>
-              <n-icon><search /></n-icon>
-            </template>
-          </n-button>
-        </n-input-group>
-        <result v-if="searchResult.length>0" :results="searchResult" />
+        <n-input v-model:value="keyWord" placeholder="Search" @keyup.enter="onSearch" />
+        <n-button @click="onSearch">
+          <template #icon>
+            <n-icon><search /></n-icon>
+          </template>
+        </n-button>
+      </n-input-group>
+      <result v-if="searchResult.length > 0" :results="searchResult" />
     </div>
-    <item v-for="item in data" :title="item.title" :tags="item.tags" :key="item.title" @item-add-tag="itemAddTag" @item-remove-tag="itemRemoveTag" />
+    <item
+      v-for="(item, index) in data"
+      :title="item.title"
+      :tags="item.tags"
+      :key="item.title"
+      :index="index"
+      @item-add-tag="itemAddTag"
+      @item-remove-tag="itemRemoveTag"
+      @dragover="over"
+      @dragstart="start"
+      @dragenter="enter"
+    />
   </div>
 </template>
 
